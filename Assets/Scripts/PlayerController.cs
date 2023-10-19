@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -9,6 +11,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private Transform orientation;
     [SerializeField] private Transform visualTransform;
+    [SerializeField] private TextMeshProUGUI coinText;
+    [SerializeField] private TextMeshProUGUI bellText;
 
     private float groundCheckRadius = 0.3f;
     private float speed = 8;
@@ -20,7 +24,10 @@ public class PlayerController : MonoBehaviour
     private Vector3 moveDirection = Vector3.forward;
     private float horizontalInput;
     private float verticalInput;
-    private RaycastHit slopeHit;
+    private bool canMove = true;
+    private int coins = 0;
+    private int bells = 0;
+    
     public GravityBody gravityBody;
 
     void Start()
@@ -49,19 +56,21 @@ public class PlayerController : MonoBehaviour
             animator.ResetTrigger("Jump");
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && canMove)
         {
             rigidBody.AddForce(-gravityBody.GravityDirection * jumpForce, ForceMode.Impulse);
         }
-
-        visualTransform.rotation = Quaternion.Slerp(visualTransform.rotation, Quaternion.LookRotation(Vector3.ProjectOnPlane(moveDirection, gravityBody.GravityDirection).normalized, -gravityBody.GravityDirection), Time.deltaTime * 10f);
+        if (canMove)
+        {
+            visualTransform.rotation = Quaternion.Slerp(visualTransform.rotation, Quaternion.LookRotation(Vector3.ProjectOnPlane(moveDirection, gravityBody.GravityDirection).normalized, -gravityBody.GravityDirection), Time.deltaTime * 10f);
+        }
     }
 
     void FixedUpdate()
     {
         bool isRunning = direction.magnitude > 0.1f;
 
-        if (isRunning)
+        if (isRunning && canMove)
         {
             //Vector3 viewDir = transform.position - Camera.main.transform.position;
             //orientation.forward = viewDir.normalized;
@@ -107,19 +116,62 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public bool OnSlope()
+    public void UpdateCoins()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, 0.8f))
-        {
-            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-            return angle != 0;
-        }
-
-        return false;
+        coinText.text = coins.ToString("N0", CultureInfo.InvariantCulture);
     }
 
-    public Vector3 GetSlopeMoveDirection(Vector3 direction)
+    public void UpdateBells()
     {
-        return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+        bellText.text = bells.ToString("N0", CultureInfo.InvariantCulture);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Coin"))
+        {
+            coins++;
+            UpdateCoins();
+            Destroy(other.gameObject);
+        }
+        else if (other.CompareTag("Bell"))
+        {
+            bells++;
+            UpdateBells();
+            Destroy(other.gameObject);
+            StartCoroutine(BeginBellDance());
+        }
+    }
+
+    IEnumerator BeginBellDance()
+    {
+        canMove = false;
+        Quaternion previousRotation = visualTransform.rotation;
+        Quaternion targetRotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
+        targetRotation = Quaternion.AngleAxis(180f, -gravityBody.GravityDirection) * targetRotation;
+        Debug.Log("targetRotation: " + targetRotation.eulerAngles);
+        // slerp the visual transform to the camera
+        while (true)
+        {
+            visualTransform.rotation = Quaternion.Slerp(visualTransform.rotation, targetRotation, Time.deltaTime * 10f);
+            if (Quaternion.Angle(visualTransform.rotation, targetRotation) < 1f)
+            {
+                break;
+            }
+            yield return null;
+        }
+        animator.SetTrigger("Spell");
+        yield return new WaitForSeconds(0.8f);
+        while (true)
+        {
+            visualTransform.rotation = Quaternion.Slerp(visualTransform.rotation, previousRotation, Time.deltaTime * 15f);
+            if (Quaternion.Angle(visualTransform.rotation, previousRotation) < 1f)
+            {
+                break;
+            }
+            yield return null;
+        }
+        canMove = true;
+        yield return null;
     }
 }
