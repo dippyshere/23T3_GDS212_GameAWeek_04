@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                animator.SetFloat("Run", direction.magnitude * rigidBody.velocity.magnitude / 5);
+                animator.SetFloat("Run", direction.magnitude * rigidBody.linearVelocity.magnitude / 5);
             }
         }
         else
