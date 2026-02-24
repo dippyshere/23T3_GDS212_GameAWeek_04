@@ -8,5 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GoodEggGalaxy1.unity
     guid: 95f816418d77bcd498b3205d938e7af9
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 90fbf90bf9aa2214d98cc3cc65045a15,
+      type: 3}
   m_UseUCBPForAssetBundles: 0

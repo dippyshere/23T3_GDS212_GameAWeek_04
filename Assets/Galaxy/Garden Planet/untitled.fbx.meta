@@ -1,9 +1,89 @@
 fileFormatVersion: 2
 guid: 3faf6749268eb3f418fe9991cd647ef6
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BrickUnderCastle_v.001
+    second: {fileID: 2100000, guid: 1b94f43293053034f926922db6cfe9cc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ConcreteMat_v.001
+    second: {fileID: 2100000, guid: dcf8f6b8281becc48832ba5400df56b2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GrassBorderMat_v.001
+    second: {fileID: 2100000, guid: 91139841b6776b34bbeabd49cb5e6928, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: GrassMat_v.001
+    second: {fileID: 2100000, guid: 9b5c1f2dc9bbbc34e85fa23aac6f8e9e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HouseTopMat_v.001
+    second: {fileID: 2100000, guid: 6f7213a855806f249a3ca7d06b453364, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: LeafMat_v.001
+    second: {fileID: 2100000, guid: 86fc48660fb4a4344b850ea2b34c4958, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SoilMat_v.001
+    second: {fileID: 2100000, guid: 016297f23940e5e4f9317adb4027b78f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Soil_v.001
+    second: {fileID: 2100000, guid: d757461b8072012449906eff3b492a72, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: StoneWall2Mat_v.001
+    second: {fileID: 2100000, guid: 849229c6f7deb7c48ac3f024c51d4300, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: StoneWall3Mat_v.001
+    second: {fileID: 2100000, guid: ca5713d2e599f0a41aad0d3f6698e58b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WhiteRock_v.001
+    second: {fileID: 2100000, guid: cb6265094c0484b449f34abfc57d4df2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WoodMat_v.001
+    second: {fileID: 2100000, guid: c05d1bc385fd128438ff24f509647141, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: WoodPanelMat1_v.001
+    second: {fileID: 2100000, guid: e3901ef42bd5db9439daec23d37c71f5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood_v.001
+    second: {fileID: 2100000, guid: 97a1cc886a512ce4794a3fb9485c0720, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: edenkusa_v.001
+    second: {fileID: 2100000, guid: 5c18c6713aea3a644a4db5b36fdd5274, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: phantom_tree1_v.001
+    second: {fileID: 2100000, guid: 77364af3a4707fa4ab53f56197c80a93, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -34,15 +114,15 @@ ModelImporter:
   meshes:
     lODScreenPercentages: []
     globalScale: 0.1
-    meshCompression: 1
+    meshCompression: 2
     addColliders: 1
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
     importPhysicalCameras: 1
     importVisibility: 1
-    importBlendShapes: 1
-    importCameras: 1
-    importLights: 1
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
     nodeNameCollisionStrategy: 1
     fileIdsGeneration: 2
     swapUVChannels: 0
@@ -56,6 +136,9 @@ ModelImporter:
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     optimizeBones: 1
+    generateMeshLods: 1
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -76,7 +159,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 1
+  importAnimation: 0
   humanDescription:
     serializedVersion: 3
     human: []
@@ -91,15 +174,15 @@ ModelImporter:
     globalScale: 0.1
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
-  importBlendShapeDeformPercent: 1
+  importBlendShapeDeformPercent: 0
   remapMaterialsIfMaterialImportModeIsNone: 0
   additionalBone: 0
   userData: 

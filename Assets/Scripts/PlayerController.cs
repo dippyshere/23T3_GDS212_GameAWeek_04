@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    static readonly int Jump = Animator.StringToHash("Jump");
+    static readonly int Land = Animator.StringToHash("Land");
+    static readonly int Spell = Animator.StringToHash("Spell");
+    static readonly int Run = Animator.StringToHash("Run");
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Animator animator;
@@ -22,41 +27,45 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rigidBody;
     private Vector3 direction;
     private Vector3 moveDirection = Vector3.forward;
-    private float horizontalInput;
-    private float verticalInput;
     private bool canMove = true;
     private int coins = 0;
     private int bells = 0;
     
     public GravityBody gravityBody;
 
+    InputAction moveAction;
+    InputAction jumpAction;
+    Camera _mainCamera;
+
     void Start()
     {
         rigidBody = transform.GetComponent<Rigidbody>();
         gravityBody = transform.GetComponent<GravityBody>();
+        moveAction = InputSystem.actions.FindAction("Move");
+        jumpAction = InputSystem.actions.FindAction("Jump");
+        _mainCamera = Camera.main;
     }
 
     void Update()
     {
-        direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical")).normalized;
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        direction = moveAction.ReadValue<Vector2>();
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundMask);
 
-        if (!isGrounded && !jumped)
+        switch (isGrounded)
         {
-            jumped = true;
-            animator.SetTrigger("Jump");
-            animator.ResetTrigger("Land");
-        }
-        else if (isGrounded && jumped)
-        {
-            jumped = false;
-            animator.SetTrigger("Land");
-            animator.ResetTrigger("Jump");
+            case false when !jumped:
+                jumped = true;
+                animator.SetTrigger(Jump);
+                animator.ResetTrigger(Land);
+                break;
+            case true when jumped:
+                jumped = false;
+                animator.SetTrigger(Land);
+                animator.ResetTrigger(Jump);
+                break;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && canMove)
+        if (jumpAction.WasPressedThisFrame() && isGrounded && canMove)
         {
             rigidBody.AddForce(-gravityBody.GravityDirection * jumpForce, ForceMode.Impulse);
         }
@@ -72,28 +81,28 @@ public class PlayerController : MonoBehaviour
 
         if (isRunning && canMove)
         {
-            //Vector3 viewDir = transform.position - Camera.main.transform.position;
+            //Vector3 viewDir = transform.position - _mainCamera.transform.position;
             //orientation.forward = viewDir.normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
+            Quaternion targetRotation = Quaternion.LookRotation(_mainCamera.transform.forward, _mainCamera.transform.up);
             orientation.rotation = targetRotation;
-            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+            moveDirection = orientation.forward * moveAction.ReadValue<Vector2>().y + orientation.right * moveAction.ReadValue<Vector2>().x;
             moveDirection = Vector3.ProjectOnPlane(moveDirection, gravityBody.GravityDirection).normalized;
-            rigidBody.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
+            rigidBody.AddForce(moveDirection.normalized * (speed * 10f), ForceMode.Force);
 
             // rigidBody.MovePosition(rigidBody.position + moveDirection * (speed * Time.fixedDeltaTime));
 
             if (!isGrounded)
             {
-                animator.SetFloat("Run", 0);
+                animator.SetFloat(Run, 0);
             }
             else
             {
-                animator.SetFloat("Run", direction.magnitude * rigidBody.linearVelocity.magnitude / 5);
+                animator.SetFloat(Run, direction.magnitude * rigidBody.linearVelocity.magnitude / 5);
             }
         }
         else
         {
-            animator.SetFloat("Run", 0);
+            animator.SetFloat(Run, 0);
         }
     }
 
@@ -147,7 +156,7 @@ public class PlayerController : MonoBehaviour
     {
         canMove = false;
         Quaternion previousRotation = visualTransform.rotation;
-        Quaternion targetRotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
+        Quaternion targetRotation = Quaternion.LookRotation(_mainCamera.transform.forward, _mainCamera.transform.up);
         targetRotation = Quaternion.AngleAxis(180f, -gravityBody.GravityDirection) * targetRotation;
         Debug.Log("targetRotation: " + targetRotation.eulerAngles);
         // slerp the visual transform to the camera
@@ -160,7 +169,7 @@ public class PlayerController : MonoBehaviour
             }
             yield return null;
         }
-        animator.SetTrigger("Spell");
+        animator.SetTrigger(Spell);
         yield return new WaitForSeconds(0.8f);
         while (true)
         {
